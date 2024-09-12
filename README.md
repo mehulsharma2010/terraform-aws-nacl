@@ -126,7 +126,7 @@ Check out these related projects.
 
 ### Contributors
 
-|  [![Animesh Yadav][Animesh_avatar]][Animesh_homepage]<br/>[Animesh Sharma][Animesh_homepage] | 
+  [![Animesh Yadav][Animesh_avatar]][Animesh_homepage]<br/>[Animesh Yadav][Animesh_homepage] 
 
 
   [Animesh_homepage]: https://github.com/animesh-opstree
