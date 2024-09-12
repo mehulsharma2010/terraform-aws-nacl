@@ -27,31 +27,74 @@ provider "aws" {
   region                  = "ap-south-1"
 }
 
-module "vpc" {
-  source = "../"
+module "protected_subnet" {
+  source = "./terraform-aws-vpc" # Adjust the path as needed
 
-  name = "opstree"
-  cidr_block = "10.0.0.0/24"
-  instance_tenancy = "default"
-  enable_dns_support = true
-  enable_dns_hostnames = false
-  enable_classiclink = false
-
-  vpc_tags = {
-    key1 = "value1"
-    key2 = "value2"
-  }  
+  vpc_id                       = var.vpc_id
+  protected_subnets_cidr       = var.protected_subnets_cidr
+  availability_zones           = var.availability_zones
+  protected_subnet_name        = var.protected_subnet_name
+  protected_rt_name            = var.protected_rt_name
+  protected_nacl_inbound_rules = var.protected_nacl_inbound_rules
+  protected_nacl_outbound_rules = var.protected_nacl_outbound_rules
+  tags                         = var.tags
 }
+
 
 ```
 
 ```
-output "vpc_id" {
-  value       = module.network_skeleton.vpc_id
-}
+terraform.tfvars
 
-output "vpc_arn" {
-  value       = module.network_skeleton.arn
+vpc_id = "vpc-03e187317b8827866"
+
+protected_subnets_cidr = [
+  "10.0.10.0/24",
+  "10.0.20.0/24"
+]
+
+availability_zones = [
+  "ap-northeast-1a",
+  "ap-northeast-1c"
+]
+
+protected_subnet_name = "protected-subnet"
+
+protected_rt_name = "protected-rt"
+
+protected_nacl_inbound_rules = [
+  {
+    rule_number = 100
+    protocol    = "tcp"
+    action      = "allow"
+    cidr_block  = "0.0.0.0/0"
+    from_port   = 80
+    to_port     = 80
+  },
+  {
+    rule_number = 101
+    protocol    = "tcp"
+    action      = "allow"
+    cidr_block  = "0.0.0.0/0"
+    from_port   = 443
+    to_port     = 443
+  }
+]
+
+protected_nacl_outbound_rules = [
+  {
+    rule_number = 100
+    protocol    = "tcp"
+    action      = "allow"
+    cidr_block  = "0.0.0.0/0"
+    from_port   = 0
+    to_port     = 65535
+  }
+]
+
+tags = {
+  Environment = "Production"
+  Project     = "MyProject"
 }
 
 ```
@@ -86,10 +129,9 @@ Check out these related projects.
 
 ### Contributors
 
-|  [![Sudipt Sharma][sudipt_avatar]][sudipt_homepage]<br/>[Sudipt Sharma][sudipt_homepage] | [![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] |
+|  [![Animesh Yadav][Animesh_avatar]][Animesh_homepage]<br/>[Animesh Sharma][Animesh_homepage] | 
 |---|---|
 
-  [sudipt_homepage]: https://github.com/iamsudipt
-  [sudipt_avatar]: https://img.cloudposse.com/75x75/https://github.com/iamsudipt.png
-  [devesh_homepage]: https://github.com/deveshs23
-  [devesh_avataar]: https://img.cloudposse.com/75x75/https://github.com/deveshs23.png
+  [Animesh_homepage]: https://github.com/animesh-opstree
+  [Animesh_avatar]: https://ca.slack-edge.com/T2AGPFQ9X-U07CCA3T3NK-3415dfacd89f-512
+  
