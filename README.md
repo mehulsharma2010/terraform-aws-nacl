@@ -24,7 +24,7 @@ Usage
 
 ```hcl
 provider "aws" {
-  region                  = "ap-south-1"
+  region                  = "ap-northeast-1"
 }
 
 module "protected_subnet" {
@@ -105,21 +105,18 @@ Tags
 
 Inputs
 ------
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| name | The sting name append in tags | `string` | `"opstree"` | yes |
-| cidr_block | The CIDR block for the VPC. Default value is a valid CIDR  | `string` | `"10.0.0.0/24"` | no |
-| instance_tenancy | A tenancy option for instances launched into the VPC | `string` | `"default"` | no |
-| enable_dns_support | A dns support for instances launched into the VPC | `boolean` | `"true"` | no |
-| enable_dns_hostnames | A dns hostname for instances launched into the VPC | `boolean` | `"false"` | no |
-| enable_classiclink |A dns classiclink for instances launched into the VPC | `boolean` | `"false"` | no |
+| Name                         | Description                                               | Type                                                                                               | Default                                    | Required |
+|------------------------------|-----------------------------------------------------------|----------------------------------------------------------------------------------------------------|--------------------------------------------|:--------:|
+| `vpc_id`                      | The ID of the VPC where the subnets will be created.       | `string`                                                                                           | n/a                                        |   yes    |
+| `protected_subnets_cidr`      | The list of CIDR blocks for the protected subnets.         | `list(string)`                                                                                     | n/a                                        |   yes    |
+| `availability_zones`          | The list of availability zones for the protected subnets.  | `list(string)`                                                                                     | n/a                                        |   yes    |
+| `protected_subnet_name`       | The name for the protected subnets.                        | `string`                                                                                           | `"protected-subnet"`                       |    no    |
+| `protected_rt_name`           | The name for the route table associated with the protected subnets. | `string`                                                                                           | `"protected-rt"`                           |    no    |
+| `protected_nacl_inbound_rules`| The inbound rules for the network ACL.                     | `list(object({ rule_number = number, protocol = string, action = string, cidr_block = string, from_port = optional(number), to_port = optional(number) }))` | n/a |   yes    |
+| `protected_nacl_outbound_rules`| The outbound rules for the network ACL.                   | `list(object({ rule_number = number, protocol = string, action = string, cidr_block = string, from_port = optional(number), to_port = optional(number) }))` | n/a |   yes    |
+| `tags`                        | Additional tags to assign to resources.                   | `map(string)`                                                                                      | `{Environment = "Production", Project = "MyProject"}` |    no    |
 
-Output
-------
-| Name | Description |
-|------|-------------|
-| vpc_id | The ID of the VPC |
-| arn | The arn of the VPC |
+
 
 ## Related Projects
 
@@ -130,8 +127,8 @@ Check out these related projects.
 ### Contributors
 
 |  [![Animesh Yadav][Animesh_avatar]][Animesh_homepage]<br/>[Animesh Sharma][Animesh_homepage] | 
-|---|---|
+
 
   [Animesh_homepage]: https://github.com/animesh-opstree
-  [Animesh_avatar]: https://ca.slack-edge.com/T2AGPFQ9X-U07CCA3T3NK-3415dfacd89f-512
+  [Animesh_avatar]: https://ca.slack-edge.com/T2AGPFQ9X-U07CCA3T3NK-3415dfacd89f-192
   
