@@ -31,6 +31,7 @@ module "protected_subnet" {
   source = "./terraform-aws-vpc" # Adjust the path as needed
 
   vpc_id                       = var.vpc_id
+  count                        = var.enable_protected_subnet == true ? 1 : 0
   protected_subnets_cidr       = var.protected_subnets_cidr
   availability_zones           = var.availability_zones
   protected_subnet_name        = var.protected_subnet_name
@@ -110,8 +111,8 @@ Inputs
 | `vpc_id`                      | The ID of the VPC where the subnets will be created.       | `string`                                                                                           | n/a                                        |   yes    |
 | `protected_subnets_cidr`      | The list of CIDR blocks for the protected subnets.         | `list(string)`                                                                                     | n/a                                        |   yes    |
 | `availability_zones`          | The list of availability zones for the protected subnets.  | `list(string)`                                                                                     | n/a                                        |   yes    |
-| `protected_subnet_name`       | The name for the protected subnets.                        | `string`                                                                                           | `"protected-subnet"`                       |    no    |
-| `protected_rt_name`           | The name for the route table associated with the protected subnets. | `string`                                                                                           | `"protected-rt"`                           |    no    |
+| `protected_subnet_name`       | The name for the protected subnets.                        | `string`                                                                                           | `"protected-subnet"`                       |    yes   |
+| `protected_rt_name`           | The name for the route table associated with the protected subnets. | `string`                                                                                           | `"protected-rt"`                           |    yes   |
 | `protected_nacl_inbound_rules`| The inbound rules for the network ACL.                     | `list(object({ rule_number = number, protocol = string, action = string, cidr_block = string, from_port = optional(number), to_port = optional(number) }))` | n/a |   yes    |
 | `protected_nacl_outbound_rules`| The outbound rules for the network ACL.                   | `list(object({ rule_number = number, protocol = string, action = string, cidr_block = string, from_port = optional(number), to_port = optional(number) }))` | n/a |   yes    |
 | `tags`                        | Additional tags to assign to resources.                   | `map(string)`                                                                                      | `{Environment = "Production", Project = "MyProject"}` |    no    |
