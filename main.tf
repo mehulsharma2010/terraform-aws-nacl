@@ -1,44 +1,35 @@
 resource "aws_network_acl" "custom_nacl" {
   vpc_id = var.vpc_id
 
-  tags = merge(
-    {
-      "Name" = var.name
-    },
-    var.tags,
-  )
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      protocol   = ingress.value.protocol
+      rule_no    = ingress.value.rule_no
+      action     = ingress.value.action
+      cidr_block = ingress.value.cidr_block
+      from_port  = ingress.value.from_port
+      to_port    = ingress.value.to_port
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      protocol   = egress.value.protocol
+      rule_no    = egress.value.rule_no
+      action     = egress.value.action
+      cidr_block = egress.value.cidr_block
+      from_port  = egress.value.from_port
+      to_port    = egress.value.to_port
+    }
+  }
+
+  tags = var.tags
 }
 
-resource "aws_network_acl_rule" "inbound" {
-  for_each = var.inbound_rules
-
+resource "aws_network_acl_association" "custom_nacl_assc" {
   network_acl_id = aws_network_acl.custom_nacl.id
-  rule_number    = each.value.rule_number
-  egress         = false
-  protocol       = each.value.protocol
-  rule_action    = each.value.rule_action
-  cidr_block     = each.value.cidr_block
-  from_port      = each.value.from_port
-  to_port        = each.value.to_port
-}
-
-resource "aws_network_acl_rule" "outbound" {
-  for_each = var.outbound_rules
-
-  network_acl_id = aws_network_acl.custom_nacl.id
-  rule_number    = each.value.rule_number
-  egress         = true
-  protocol       = each.value.protocol
-  rule_action    = each.value.rule_action
-  cidr_block     = each.value.cidr_block
-  from_port      = each.value.from_port
-  to_port        = each.value.to_port
-}
-
-resource "aws_subnet_network_acl_association" "custom_nacl" {
-  for_each = toset(var.subnet_ids)
-
-  subnet_id      = each.value
-  network_acl_id = aws_network_acl.custom_nacl.id
+  subnet_id      = var.subnet_id
 }
 
